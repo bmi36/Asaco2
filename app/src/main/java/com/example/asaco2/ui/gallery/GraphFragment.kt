@@ -20,7 +20,7 @@ import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class GraphFragment(
-    private val list: Array<Float>?, private val size: EnamDate
+    private val list: Array<Float>?, private val size: EnamDate?
 ) : Fragment(), CoroutineScope {
 
     override fun onCreateView(
@@ -30,7 +30,6 @@ class GraphFragment(
     ): View? = inflater.inflate(R.layout.graph_fragment, container, false)
 
     private val barChar: ArrayList<BarEntry> = ArrayList()
-
     private val nameList: ArrayList<String> = ArrayList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,6 +83,12 @@ class GraphFragment(
                     "M",
                     Locale.JAPAN
                 ).run { format(calendar.apply { add(Calendar.MONTH, -index) }.time) }
+            }
+            else -> getString(R.string.Day).also {
+                strDate = SimpleDateFormat(
+                    "d",
+                    Locale.JAPAN
+                ).run { format(calendar.apply { add(Calendar.DATE, -index) }.time) }
             }
         }
 

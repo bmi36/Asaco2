@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     private lateinit var prefs: SharedPreferences
     private var stepcount = -2
     private lateinit var permissions: Array<String>
-    private lateinit var roomViewModel: RoomViewModel
+    private val roomViewModel: RoomViewModel by lazy {  }
     private var flg = false
     private var hohaba: Double = 0.0
     private var weight = 0.0
@@ -168,7 +168,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             drawer_layout.closeDrawer(GravityCompat.START)
 
         }
-        roomViewModel = ViewModelProvider(this)[RoomViewModel::class.java]
 
         //どろわーの設定
         ActionBarDrawerToggle(
