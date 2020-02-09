@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                 roomViewModel.insert(entity)
             }
         }
-
         return roomViewModel.getStep(date.toLong())?.last() ?: 0
     }
 
