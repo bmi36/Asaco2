@@ -22,5 +22,4 @@ class RoomViewModel(application: Application) : AndroidViewModel(application){
     suspend fun getsum(id: Long): Array<Int>? = withContext(Dispatchers.Default) { repository.getsum(id) }
     suspend fun getmonth(year: Long): Array<Int> = withContext(Dispatchers.Default){ repository.getMonth(year) }
     suspend fun getdayentity(id: Long): RoomEntity = withContext(Dispatchers.Default){ repository.getDayEntity(id) }
-    fun updateOrinsert(entity: RoomEntity) = viewModelScope.launch { repository.updateOrinsert(entity) }
 }

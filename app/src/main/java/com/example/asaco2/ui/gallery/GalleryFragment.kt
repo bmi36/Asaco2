@@ -60,7 +60,7 @@ class GalleryFragment(private val stepcount: Int, private val calory: String, pr
             val list: List<Float>? = when (date) {
                 EnamDate.DAY -> viewModel.getStep(search.replaceInt().toLong())?.map { it.toFloat() }
 
-                EnamDate.MONTH -> viewModel.getMonth(search.replaceInt().toLong()).map { it.toFloat() }
+                EnamDate.MONTH -> viewModel.getMonth(search.toLong()).map { it.toFloat() }
             }?.asReversed()
             //            グラフの表示
             childFragmentManager.beginTransaction()

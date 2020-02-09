@@ -16,7 +16,7 @@ interface RoomDao{
     @Update
     suspend fun update(entity: RoomEntity)
 
-    @Query("select sum(step) from entity where data between :year || 01 || '%' and :year || 12 || '%' group by data ")
+    @Query("select sum(step) from entity where data between :year || 01 || '%' and :year || 12 || '%' group by :year || data order by :year || data ASC")
     suspend fun getMonth(year: Long): Array<Int>
 
     @Query("select * from entity where data like :data || '%'")
