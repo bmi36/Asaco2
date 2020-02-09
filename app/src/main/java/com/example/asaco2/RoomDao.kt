@@ -7,6 +7,9 @@ import androidx.room.Update
 
 @Dao
 interface RoomDao{
+
+    @Query("select step from entity where data")
+    fun getStep(): Array<Int>
     @Query("select sum(step) from entity where data between :data - 6 and :data group by data order by data ASC")
     suspend fun getsumSteps(data: Long): Array<Int>
 
@@ -16,9 +19,10 @@ interface RoomDao{
     @Update
     suspend fun update(entity: RoomEntity)
 
-    @Query("select sum(step) from entity where data between :year || 01 || '%' and :year || 12 || '%' group by :year || data order by :year || data ASC")
+    @Query("select sum(step) from entity where data between :year || 01 || '%' and :year || 12 || '%' order by :year || data ASC")
     suspend fun getMonth(year: Long): Array<Int>
 
     @Query("select * from entity where data like :data || '%'")
     suspend fun getDayEntity(data: Long): RoomEntity
+
 }

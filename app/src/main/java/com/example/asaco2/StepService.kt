@@ -31,8 +31,8 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mstepConterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         mSensorManager.registerListener(this, mstepConterSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        serviceViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-            .create(RoomViewModel::class.java)
+//        serviceViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+//            .create(RoomViewModel::class.java)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
