@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "entity")
-data class StepEntity(
+data class RoomEntity(
     @PrimaryKey
     @ColumnInfo(name = "data")
     var id: Long,

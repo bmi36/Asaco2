@@ -1,26 +1,30 @@
 package com.example.asaco2
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
-class StepViewModel(application: Application) : AndroidViewModel(application){
-    private val repository: StepRepository = StepDataBase.getInstance(application).dao().let {
-        StepRepository(it)
+class StepViewModel : ViewModel() {
+
+
+    val stepEntity: MutableLiveData<RoomEntity> = MutableLiveData()
+    private var mstepEntity: RoomEntity? = null
+
+    fun getStep(step: Int){
+        val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
+        mstepEntity = RoomEntity(date.toLong(),step)
+        stepEntity.postValue(mstepEntity)
     }
 
-    fun getStep(id: Long) = runBlocking { getsum(id) }
-    fun getMonth(year: Long) = runBlocking { getmonth(year) }
-    fun getDayEntity(id: Long) = runBlocking { getdayentity(id) }
+    //    private val stepArray: MutableLiveData<ArrayList<StepEntity>> = MutableLiveData()
+//    var mstepArray: ArrayList<StepEntity>? = null
 
-    fun insert(entity: StepEntity) = viewModelScope.launch { repository.insert(entity) }
-    fun update(entity: StepEntity) = viewModelScope.launch{ repository.update(entity) }
-    suspend fun getsum(id: Long): Array<Int>? = withContext(Dispatchers.Default) { repository.getsum(id) }
-    suspend fun getmonth(year: Long): Array<Int> = withContext(Dispatchers.Default){ repository.getMonth(year) }
-    suspend fun getdayentity(id: Long): StepEntity = withContext(Dispatchers.Default){ repository.getDayEntity(id) }
-    fun updateOrinsert(entity: StepEntity) = viewModelScope.launch { repository.updateOrinsert(entity) }
+
+//    fun uploadList(step: Int){
+//        val date = SimpleDateFormat("yyyyMMdd", Locale.UK).format(Calendar.getInstance().time)
+//        mstepArray?.let {arraylist->
+//            arraylist.forEach { if (it.id == date.toLong()) it.step = step }
+//        stepArray = arraylist
+//    }
 }

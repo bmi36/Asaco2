@@ -8,7 +8,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.asaco2.R
-import com.example.asaco2.StepViewModel
+import com.example.asaco2.RoomViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 class Calendar : Fragment(), CoroutineScope {
 
     private lateinit var calendaredModel: CalendarViewModel
-    private lateinit var stepModel: StepViewModel
+    private lateinit var stepModel: RoomViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +46,7 @@ class Calendar : Fragment(), CoroutineScope {
 
              activity?.run {
                 calendaredModel =ViewModelProvider(this)[CalendarViewModel::class.java]
-                 stepModel = ViewModelProvider(this)[StepViewModel::class.java]
+                 stepModel = ViewModelProvider(this)[RoomViewModel::class.java]
             } ?: throw Exception("Invalid Activity")
             launch(Dispatchers.Default) {
                 val element = calendaredModel.getCalendar(id)

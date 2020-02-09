@@ -15,6 +15,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             tools:ignore="GoogleAppIndexingWarning">
+            <service android:name="com.example.asaco2.StepService"/>
             <activity android:name=".ui.camera.CameraResult" />
 
             <activity android:name=".MainActivity"

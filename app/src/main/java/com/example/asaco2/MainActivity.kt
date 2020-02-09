@@ -2,18 +2,14 @@ package com.example.asaco2
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.IBinder
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
@@ -33,7 +29,6 @@ import com.example.asaco2.ui.gallery.GalleryFragment
 import com.example.asaco2.ui.home.Calendar
 import com.example.asaco2.ui.tools.ToolsFragment
 import com.google.android.material.navigation.NavigationView
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -50,8 +45,7 @@ const val CAMERA_REQUEST_CODE = 1
 const val HUNTER = "梅田ひろし"
 
 
-class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBtn,
-    SensorEventListener {
+class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBtn {
 
     companion object {
         private const val REQUEST_CODE = 1000
@@ -61,15 +55,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     private var mSensorManager: SensorManager? = null
     private var mStepCounterSensor: Sensor? = null
     private lateinit var prefs: SharedPreferences
-    private var stepcount = -1
+    private var stepcount = 0
     private lateinit var permissions: Array<String>
-    private var sensorcount: Int = -1
-    private lateinit var viewModel: StepViewModel
+    private lateinit var roomViewModel: RoomViewModel
     private var flg = false
     private var hohaba: Double = 0.0
     private var weight = 0.0
-    private val day: Long by lazy { prefs.getLong("calendar", time) }
-
+    private var bind = false
+    private lateinit var stepService: StepService
     private val appBarConfiguration: AppBarConfiguration by lazy {
         AppBarConfiguration(
             setOf(
@@ -80,6 +73,42 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             ), drawer_layout
         )
     }
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceDisconnected(name: ComponentName?) {
+            bind = false
+        }
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder) {
+            if (service is StepService.StepBindar) {
+                bind = true
+                stepService = service.getBindar()
+            }
+        }
+    }
+
+    fun initdatebase() {
+        val date =
+            SimpleDateFormat(
+                "yyyyMMdd",
+                Locale.JAPAN
+            ).format(java.util.Calendar.getInstance().time)
+        val stepPrefs = getSharedPreferences("STEP", Context.MODE_PRIVATE)
+        val flgPrefs = getSharedPreferences(
+            "FLAG",
+            Context.MODE_PRIVATE
+        ).all.map { Pair<String, Boolean>(it.key, it.value as Boolean) }
+        var flg = false
+        flgPrefs.forEach { pair -> flg = if (date == pair.first) pair.second else false }
+        stepPrefs.all.apply {
+            map {
+                RoomEntity(it.key.toLong(), it.value.toString().toInt()).let { entity ->
+                    if (flg) roomViewModel.insert(entity) else roomViewModel.update(entity)
+                }
+            }
+        }
+    }
+
 
     //    ナビゲーションの初期化
     private val navView: NavigationView by lazy {
@@ -103,7 +132,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                                 (calgary()).toString(),
                                 (hohaba * stepcount / 100000)
                             )
-                        ).also { viewModel.update(StepEntity(day, stepcount)) }
+                        ).also { initdatebase() }
                     }
                     R.id.nav_tools -> {
                         toolbar.title = getString(R.string.setting)
@@ -141,7 +170,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             drawer_layout.closeDrawer(GravityCompat.START)
 
         }
-        viewModel = ViewModelProvider(this)[StepViewModel::class.java]
+        roomViewModel = ViewModelProvider(this)[RoomViewModel::class.java]
 
         //どろわーの設定
         ActionBarDrawerToggle(
@@ -154,9 +183,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             drawer_layout.addDrawerListener(it)
             it.syncState()
         }
-        sensorcount = prefs.getInt("sensor", 0)
 
-        stepcount = prefs.getInt("walk", -1)
+        val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
+        stepcount = prefs.getInt(date, 0)
         getSharedPreferences("User", Context.MODE_PRIVATE).run {
             hohaba = (getString("height", "170")?.toDouble() ?: 0.0 * 0.45)
             weight = getString("weight", "60")?.toDouble() ?: 0.0
@@ -165,19 +194,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         setHeader(navView)
         navView.setCheckedItem(R.id.nav_calendar)
         action(Calendar())
-        prefs.run {
-
-            if (day == time){
-                viewModel.insert(StepEntity(time,stepcount))
-            }
-//            day = getLong("calendar", time(currentTimeMillis).toLong())
-//                Date(
-//                    getLong(
-//                        "calendar", System.currentTimeMillis().also {
-//                            viewModel.insert(StepEntity(it, 0))
-//                        })
-//                ).let { time(it).toInt() }
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean =
@@ -191,7 +207,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     //写真を取るときのやつ
     private fun takePicture() {
         val folder = getExternalFilesDir(Environment.DIRECTORY_DCIM)
-        val name = SimpleDateFormat("ddHHmmss", Locale.US).format(Date()).let {
+        val name = SimpleDateFormat("ddHHmmss", Locale.JAPAN).format(Date()).let {
             String.format("CameraIntent_%s.jpg", it)
         }
         file = File(folder, name)
@@ -228,6 +244,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        val intentService = Intent(this,StepService::class.java)
+        stopService(intentService)
+        unbindService(connection)
+    }
+
 
     //写真を撮った後のやつ
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -242,8 +265,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             }
         }
     }
-
-
     //フラグメントの切り替えのやつ
     private fun action(fragment: Fragment?): Boolean {
         if (fragment != null) {
@@ -303,50 +324,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         navView.setCheckedItem(R.id.nav_calendar)
         action(Calendar())
     }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
     override fun onStart() {
+        val intentService = Intent(this, StepService::class.java)
+        startService(intentService)
+        bindService(intentService, connection, Context.BIND_AUTO_CREATE)
         navView.getHeaderView(0).run {
             Cal.text = getString(R.string.calText, prefs.getInt("calory", 0).toString())
             barn.text = getString(R.string.barnText, calgary().toString())
         }
         super.onStart()
-    }
-
-    //    歩数をあれするやつ
-    override fun onSensorChanged(event: SensorEvent) {
-        when (event.sensor.type) {
-            Sensor.TYPE_STEP_COUNTER -> {
-                stepcount++
-                when (val gap = event.values[0].toInt() - sensorcount) {
-                    0 -> sensorcount = event.values[0].toInt()
-                    else -> stepcount + gap
-                }
-            }
-        }
-        navView.getHeaderView(0).barn.text = getString(R.string.barnText,calgary().toString())
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mSensorManager
-            ?.registerListener(this, mStepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL)
-    }
-
-    //    歩数の保存するやつ
-    override fun onStop() {
-        super.onStop()
-        mSensorManager?.unregisterListener(this, mStepCounterSensor)
-        viewModel.updateOrinsert(StepEntity(day.toLong(), stepcount))
-        prefs.edit().run {
-
-            if (day.toInt() == time.toInt()) putInt("walk", stepcount) else clear()
-
-            putInt("sensor", sensorcount)
-            putLong("calendar",day)
-            apply()
-        }
     }
 }
 
@@ -360,11 +346,6 @@ fun hideKeyboard(activity: Activity) {
     }
 }
 
-val currentTimeMillis = Date(System.currentTimeMillis())
+val currentTimeMillis = java.util.Calendar.getInstance().time
 val time: Long =
-    SimpleDateFormat("yyyyMMdd", Locale.US).run { format(currentTimeMillis) }.toLong()
-fun today(date: Date): String =
-    SimpleDateFormat("yyyy年MM月dd日", Locale.US).run { format(date) }
-
-fun String.toDailyClass() = Gson().fromJson(this, DayilyEventController::class.java)
-fun DayilyEventController.toJson() = Gson().toJson(this)
+    SimpleDateFormat("yyyyMMdd", Locale.JAPAN).run { format(currentTimeMillis) }.toLong()

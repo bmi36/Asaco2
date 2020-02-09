@@ -24,49 +24,45 @@ class GalleryFragment(private val stepCount: Int, private val calory: String, pr
 
     CoroutineScope {
 
-    private lateinit var viewModel: StepViewModel
+    private lateinit var viewModel: RoomViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_gallery, container, false)
-    }
+    ): View = inflater.inflate(R.layout.fragment_gallery, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[StepViewModel::class.java]
+        viewModel = ViewModelProvider(this)[RoomViewModel::class.java]
 
         dayText.text = time.toString()
         hosuu_text.text = stepCount.toString()
         calory_text.text = getString(R.string.kcal,calory)
         distance_text.text = getString(R.string.km,String.format("%.1f", dis))
 
-        listener(7)
-        dayBtn.setOnClickListener { listener(7) }
-        monthBtn.setOnClickListener { listener(12) }
+        listener(EnamDate.DAY)
+        dayBtn.setOnClickListener { listener(EnamDate.DAY) }
+        monthBtn.setOnClickListener { listener(EnamDate.MONTH) }
     }
 
-    private fun listener(size: Int) {
+    private fun listener(date: EnamDate) {
         val currentTimeMillis = Date(System.currentTimeMillis())
-        val search: String = when (size) {
-            7 -> SimpleDateFormat("yyyy/MM/dd", Locale.US).run { format(currentTimeMillis) }
-            else -> SimpleDateFormat("yyyy/MM", Locale.US).run { format(currentTimeMillis) }
+        val search: String = when (date) {
+            EnamDate.DAY -> SimpleDateFormat("yyyy/MM/dd", Locale.JAPAN).run { format(currentTimeMillis) }
+            EnamDate.MONTH -> SimpleDateFormat("yyyy/MM", Locale.JAPAN).run { format(currentTimeMillis) }
         }
 
         launch(Default) {
-            //        リストの生成（1週間or12か月）
-            val list: List<Float>? = when (size) {
-                7 -> viewModel.getStep(search.replaceInt().toLong())?.map { it.toFloat() }
-                12 -> viewModel.getmonth(search.replaceInt().toLong()).map { it.toFloat() }
-                else -> null
+            val list: List<Float>? = when (date) {
+                EnamDate.DAY -> viewModel.getStep(search.replaceInt().toLong())?.map { it.toFloat() }
+                EnamDate.MONTH -> viewModel.getMonth(search.replaceInt().toLong()).map { it.toFloat() }
             }
 
             //            グラフの表示
             childFragmentManager.beginTransaction()
-                .replace(frame.id, GraphFragment(list?.toTypedArray(),size,currentTimeMillis)).commit()
+                .replace(frame.id, GraphFragment(list?.toTypedArray(),date.hani,currentTimeMillis)).commit()
         }
     }
 
