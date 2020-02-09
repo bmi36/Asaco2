@@ -28,8 +28,6 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
 
     override fun onCreate() {
         super.onCreate()
-        val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
-        step = getSharedPreferences("STEP",Context.MODE_PRIVATE).getInt(date,0)
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mstepConterSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         mSensorManager.registerListener(this, mstepConterSensor, SensorManager.SENSOR_DELAY_NORMAL)
@@ -45,8 +43,9 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
 
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
-            step++
             val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
+            step = getSharedPreferences("STEP",Context.MODE_PRIVATE).getInt(date,0)
+            step++
             getSharedPreferences("STEP",Context.MODE_PRIVATE).edit().putInt(date,step).apply()
             Log.d("step", step.toString())
         }

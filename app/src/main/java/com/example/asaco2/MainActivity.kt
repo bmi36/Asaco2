@@ -92,20 +92,19 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         val date =
             SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
         val stepPrefs = getSharedPreferences("STEP", Context.MODE_PRIVATE)
-        var step = 0
         val flgPrefs = getSharedPreferences("FLAG", Context.MODE_PRIVATE)
-
         stepPrefs.all.map { Pair(it.key.toLong(), it.value as Int) }.forEach {
             val entity = RoomEntity(it.first, it.second)
-            if (!flgPrefs.getBoolean(date, false)) {
-                roomViewModel.insert(entity)
-                flgPrefs.edit().putBoolean(date, true).apply()
-            } else {
+            val flg = flgPrefs.getBoolean(date, false)
+            if (flg) {
                 roomViewModel.update(entity)
+            } else {
+                flgPrefs.edit().putBoolean(date, true).apply()
+                roomViewModel.insert(entity)
             }
-            step  = it.second
         }
-        return step
+
+        return roomViewModel.getStep(date.toLong())?.last() ?: 0
     }
 
 
@@ -126,7 +125,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                     R.id.nav_gallery -> {
                         toolbar.title = getString(R.string.hosuu)
                         action(
-                            GalleryFragment(initdatebase(),(calgary()).toString(), (hohaba * stepcount / 100000))
+                            GalleryFragment(
+                                initdatebase(),
+                                (calgary()).toString(),
+                                (hohaba * stepcount / 100000)
+                            )
                         )
                     }
                     R.id.nav_tools -> {
