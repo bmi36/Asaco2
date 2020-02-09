@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     private var mSensorManager: SensorManager? = null
     private var mStepCounterSensor: Sensor? = null
     private lateinit var prefs: SharedPreferences
-    private var stepcount = 0
+    private var stepcount = -2
     private lateinit var permissions: Array<String>
     private lateinit var roomViewModel: RoomViewModel
     private var flg = false
@@ -83,30 +83,29 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             if (service is StepService.StepBindar) {
                 bind = true
                 stepService = service.getBindar()
+                initdatebase()
             }
         }
     }
 
-    fun initdatebase() {
+    fun initdatebase(): Int {
         val date =
-            SimpleDateFormat(
-                "yyyyMMdd",
-                Locale.JAPAN
-            ).format(java.util.Calendar.getInstance().time)
+            SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
         val stepPrefs = getSharedPreferences("STEP", Context.MODE_PRIVATE)
-        val flgPrefs = getSharedPreferences(
-            "FLAG",
-            Context.MODE_PRIVATE
-        ).all.map { Pair<String, Boolean>(it.key, it.value as Boolean) }
-        var flg = false
-        flgPrefs.forEach { pair -> flg = if (date == pair.first) pair.second else false }
-        stepPrefs.all.apply {
-            map {
-                RoomEntity(it.key.toLong(), it.value.toString().toInt()).let { entity ->
-                    if (flg) roomViewModel.insert(entity) else roomViewModel.update(entity)
-                }
+        var step = 0
+        val flgPrefs = getSharedPreferences("FLAG", Context.MODE_PRIVATE)
+
+        stepPrefs.all.map { Pair(it.key.toLong(), it.value as Int) }.forEach {
+            val entity = RoomEntity(it.first, it.second)
+            if (!flgPrefs.getBoolean(date, false)) {
+                roomViewModel.insert(entity)
+                flgPrefs.edit().putBoolean(date, true).apply()
+            } else {
+                roomViewModel.update(entity)
             }
+            step  = it.second
         }
+        return step
     }
 
 
@@ -127,12 +126,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                     R.id.nav_gallery -> {
                         toolbar.title = getString(R.string.hosuu)
                         action(
-                            GalleryFragment(
-                                stepcount,
-                                (calgary()).toString(),
-                                (hohaba * stepcount / 100000)
-                            )
-                        ).also { initdatebase() }
+                            GalleryFragment(initdatebase(),(calgary()).toString(), (hohaba * stepcount / 100000))
+                        )
                     }
                     R.id.nav_tools -> {
                         toolbar.title = getString(R.string.setting)
@@ -184,10 +179,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             it.syncState()
         }
 
-        val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
+        val date =
+            SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
         stepcount = prefs.getInt(date, 0)
         getSharedPreferences("User", Context.MODE_PRIVATE).run {
-            hohaba = (getString("height", "170")?.toDouble() ?: 0.0 * 0.45)
+            hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
             weight = getString("weight", "60")?.toDouble() ?: 0.0
         }
         setFragment = Calendar()
@@ -246,7 +242,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
 
     override fun onStop() {
         super.onStop()
-        val intentService = Intent(this,StepService::class.java)
+        val intentService = Intent(this, StepService::class.java)
         stopService(intentService)
         unbindService(connection)
     }
@@ -265,6 +261,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             }
         }
     }
+
     //フラグメントの切り替えのやつ
     private fun action(fragment: Fragment?): Boolean {
         if (fragment != null) {
@@ -314,7 +311,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         }
     }
 
-    private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 200000).toInt()
+    private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 2200000).toInt()
 
     override val coroutineContext: CoroutineContext
         get() = Job()
@@ -324,6 +321,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         navView.setCheckedItem(R.id.nav_calendar)
         action(Calendar())
     }
+
     override fun onStart() {
         val intentService = Intent(this, StepService::class.java)
         startService(intentService)
@@ -345,7 +343,3 @@ fun hideKeyboard(activity: Activity) {
         manager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
-
-val currentTimeMillis = java.util.Calendar.getInstance().time
-val time: Long =
-    SimpleDateFormat("yyyyMMdd", Locale.JAPAN).run { format(currentTimeMillis) }.toLong()

@@ -13,14 +13,14 @@ import kotlinx.android.synthetic.main.module_distance.*
 import kotlinx.android.synthetic.main.module_hosuu.*
 import kotlinx.android.synthetic.main.walk_statu_layout.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class GalleryFragment(private val stepCount: Int, private val calory: String, private val dis: Double) : Fragment(),
+class GalleryFragment(private val stepcount: Int, private val calory: String, private val dis: Double) : Fragment(),
 
     CoroutineScope {
 
@@ -37,10 +37,10 @@ class GalleryFragment(private val stepCount: Int, private val calory: String, pr
 
         viewModel = ViewModelProvider(this)[RoomViewModel::class.java]
 
-        dayText.text = time.toString()
-        hosuu_text.text = stepCount.toString()
+        dayText.text = SimpleDateFormat("yyyy年M月d日", Locale.JAPAN).format(Calendar.getInstance().time)
         calory_text.text = getString(R.string.kcal,calory)
         distance_text.text = getString(R.string.km,String.format("%.1f", dis))
+        hosuu_text.text = stepcount.toString()
 
         listener(EnamDate.DAY)
         dayBtn.setOnClickListener { listener(EnamDate.DAY) }
@@ -50,19 +50,21 @@ class GalleryFragment(private val stepCount: Int, private val calory: String, pr
     private fun listener(date: EnamDate) {
         val currentTimeMillis = Date(System.currentTimeMillis())
         val search: String = when (date) {
-            EnamDate.DAY -> SimpleDateFormat("yyyy/MM/dd", Locale.JAPAN).run { format(currentTimeMillis) }
-            EnamDate.MONTH -> SimpleDateFormat("yyyy/MM", Locale.JAPAN).run { format(currentTimeMillis) }
+
+            EnamDate.DAY -> SimpleDateFormat("yyyyMMdd", Locale.JAPAN).run { format(currentTimeMillis) }
+
+            EnamDate.MONTH -> SimpleDateFormat("yyyy", Locale.JAPAN).run { format(currentTimeMillis) }
         }
 
-        launch(Default) {
+        launch(Dispatchers.IO) {
             val list: List<Float>? = when (date) {
                 EnamDate.DAY -> viewModel.getStep(search.replaceInt().toLong())?.map { it.toFloat() }
-                EnamDate.MONTH -> viewModel.getMonth(search.replaceInt().toLong()).map { it.toFloat() }
-            }
 
+                EnamDate.MONTH -> viewModel.getMonth(search.replaceInt().toLong()).map { it.toFloat() }
+            }?.asReversed()
             //            グラフの表示
             childFragmentManager.beginTransaction()
-                .replace(frame.id, GraphFragment(list?.toTypedArray(),date.hani,currentTimeMillis)).commit()
+                .replace(frame.id, GraphFragment(list?.asReversed()?.toTypedArray(),date)).commit()
         }
     }
 
