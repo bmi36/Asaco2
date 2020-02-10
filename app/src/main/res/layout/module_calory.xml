@@ -30,6 +30,8 @@
             android:text="@string/Cal"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="#FF1A6F"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

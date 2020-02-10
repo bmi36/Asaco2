@@ -28,58 +28,61 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/include_today_distance"
         app:layout_constraintStart_toStartOf="@+id/dayText"
-        app:layout_constraintTop_toBottomOf="@+id/dayBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/dayText" />
 
     <include
         android:id="@+id/include_today_calory"
         layout="@layout/module_calory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@android:dimen/app_icon_size"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include_today_hosuu" />
+        app:layout_constraintStart_toEndOf="@+id/dayText"
+        app:layout_constraintTop_toBottomOf="@+id/include_today_distance" />
 
     <include
         android:id="@+id/include_today_distance"
         layout="@layout/module_distance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/include_today_calory"
         app:layout_constraintStart_toStartOf="@+id/include_today_calory"
-        app:layout_constraintTop_toBottomOf="@+id/include_today_calory"
+        app:layout_constraintTop_toBottomOf="@+id/dayText"
         app:layout_constraintVertical_bias="0.100000024" />
 
-    <Button
-        android:id="@+id/dayBtn"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dayText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.37"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/monthBtn" />
+<!--    <Button-->
+<!--        android:id="@+id/dayBtn"-->
+<!--        style="@style/Widget.AppCompat.Button.Small"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/dayText"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.37"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/monthBtn" />-->
 
-    <Button
-        android:id="@+id/monthBtn"
-        style="@android:style/Widget.Material.Light.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/monthText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dayText" />
+<!--    <Button-->
+<!--        android:id="@+id/monthBtn"-->
+<!--        style="@android:style/Widget.Material.Light.Button.Small"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:text="@string/monthText"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.7"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/dayText" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

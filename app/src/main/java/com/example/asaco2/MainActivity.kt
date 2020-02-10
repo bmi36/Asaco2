@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     private lateinit var prefs: SharedPreferences
     private var stepcount = -2
     private lateinit var permissions: Array<String>
-    private val roomViewModel: RoomViewModel by lazy {  }
+    private lateinit var roomViewModel: RoomViewModel
     private var flg = false
     private var hohaba: Double = 0.0
     private var weight = 0.0
@@ -180,6 +180,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             drawer_layout.addDrawerListener(it)
             it.syncState()
         }
+
+        roomViewModel = ViewModelProvider.AndroidViewModelFactory(application).create(RoomViewModel::class.java)
 
         val date =
             SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)

@@ -10,18 +10,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-class RoomViewModel(application: Application) : ViewModel() {
+class RoomViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: RoomRepository = RoomDataBase.getInstance(application).dao().let {
         RoomRepository(it)
     }
 
-    private var stepList = MediatorLiveData<Array<Int>>()
-    var mstepList: MediatorLiveData<Array<Int>>
-
-    init {
-       stepList.postValue(repository.getStep())
-        mstepList = this.stepList
-    }
+//    private var stepList = MediatorLiveData<Array<Int>>()
+//    var mstepList: MediatorLiveData<Array<Int>>
+//
+//    init {
+//       stepList.postValue(repository.getStep())
+//        mstepList = this.stepList
+//    }
 
     fun getStep(id: Long) = runBlocking { getsum(id) }
     fun getMonth(year: Long) = runBlocking { getmonth(year) }
@@ -32,7 +32,5 @@ class RoomViewModel(application: Application) : ViewModel() {
     suspend fun getsum(id: Long): Array<Int>? = withContext(Dispatchers.Default) { repository.getsum(id) }
     suspend fun getmonth(year: Long): Array<Int> = withContext(Dispatchers.Default){ repository.getMonth(year) }
     suspend fun getdayentity(id: Long): RoomEntity = withContext(Dispatchers.Default){ repository.getDayEntity(id) }
-    fun getStep() {
-        stepList.postValue(repository.getStep())
-    }
+//
 }
