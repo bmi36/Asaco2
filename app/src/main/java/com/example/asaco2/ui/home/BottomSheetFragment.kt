@@ -12,6 +12,7 @@ import com.example.asaco2.R
 import kotlinx.android.synthetic.main.fragment_included.*
 import kotlinx.android.synthetic.main.fragment_included.view.*
 import java.util.Calendar
+import kotlin.math.roundToInt
 
 
 class BottomSheetFragment(
@@ -36,20 +37,28 @@ class BottomSheetFragment(
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
 
-        for (element in list) { total += element.absorption as Int }
+        val prefs = activity?.getSharedPreferences("User", Context.MODE_PRIVATE)
+        val height = prefs?.getString("height", "0f")?.toDouble() ?: 0.0
+        val weight = prefs?.getString("weight", "0f")?.toDouble() ?: 0.0
+
+        val hohaba = (height * 0.45)
+        val walkcalorie =(step.let { 1.05 * (3 * hohaba * it) * weight } / 200000).toInt()
+
+
+        for (element in list) {
+            total += element.absorption as Int
+        }
 
         nowText.text = dayString
-        sumText.text = getString(R.string.sumText,total.toString())
-        walkText.text = getString(R.string.walkCalText,step.toString())
-        walkCalText.text = getString(R.string.kcal,calory.toString())
+        sumText.text = getString(R.string.sumText, total.toString())
+        walkText.text = getString(R.string.walkCalText, step.toString())
+        walkCalText.text = getString(R.string.kcal, calory.toString())
 
-        val bmr = activity?.getSharedPreferences("User",Context.MODE_PRIVATE)?.getInt("bmr",0) ?: 0
+        val bmr = prefs?.getInt("bmr", 0) ?: 0
+        val difference = if (flag)
+            total - walkcalorie.toInt() else total - walkcalorie.toInt() - bmr
 
-        val difference = if (flag){
-            total - step - bmr
-        }else{ total - step}
-
-        totalCalText.text = getString(R.string.total,difference.toString())
+        totalCalText.text = getString(R.string.total, difference.toString())
 
     }
 }

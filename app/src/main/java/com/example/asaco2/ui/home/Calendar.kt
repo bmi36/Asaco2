@@ -44,7 +44,7 @@ class Calendar(val calory: Int) : Fragment(), CoroutineScope {
             val strMonth = if (month > 9) "${month + 1}" else "0${month + 1}"
             val strDay = if (dayOfMonth > 9) "$dayOfMonth" else "0${dayOfMonth}"
             val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
-            val dateString = SimpleDateFormat("yyyy年M月d日", Locale.JAPAN).format(Calendar.getInstance().time)
+            val dateString = "${year}年${month}月${dayOfMonth}日"
             val id = (year.toString()+strMonth+strDay).toLong()
             val flg = date.toLong() == id
 
