@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                     }
                     R.id.nav_calendar -> {
                         toolbar.title = getString(R.string.calendar)
-                        action(Calendar())
+                        action(Calendar(calgary()))
                     }
                     R.id.nav_gallery -> {
                         toolbar.title = getString(R.string.hosuu)
@@ -189,10 +189,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
             weight = getString("weight", "60")?.toDouble() ?: 0.0
         }
-        setFragment = Calendar()
+        setFragment = Calendar(calgary())
         setHeader(navView)
         navView.setCheckedItem(R.id.nav_calendar)
-        action(Calendar())
+        action(Calendar(calgary()))
     }
 
     override fun onSupportNavigateUp(): Boolean =
@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         }
     }
 
-    private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 2200000).toInt()
+    private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 220000).toInt()
 
     override val coroutineContext: CoroutineContext
         get() = Job()
@@ -322,7 +322,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     override fun onClick() {
         toolbar.title = getString(R.string.calendar)
         navView.setCheckedItem(R.id.nav_calendar)
-        action(Calendar())
+        action(Calendar(calgary()))
     }
 
     override fun onStart() {

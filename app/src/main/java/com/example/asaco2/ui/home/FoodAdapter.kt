@@ -1,6 +1,5 @@
 package com.example.asaco2.ui.home
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import com.example.asaco2.R
 class FoodAdapter(
     val context: Context,
     private val list: Array<CalendarEntity>
+
 ) : RecyclerView.Adapter<FoodListViewHolder>() {
 
     private val inflater = LayoutInflater.from(context)

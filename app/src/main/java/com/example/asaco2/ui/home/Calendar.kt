@@ -15,10 +15,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.Calendar
 import kotlin.coroutines.CoroutineContext
 
-
-class Calendar : Fragment(), CoroutineScope {
+class Calendar(val calory: Int) : Fragment(), CoroutineScope {
 
     private lateinit var calendaredModel: CalendarViewModel
     private lateinit var stepModel: RoomViewModel
@@ -41,8 +43,10 @@ class Calendar : Fragment(), CoroutineScope {
 
             val strMonth = if (month > 9) "${month + 1}" else "0${month + 1}"
             val strDay = if (dayOfMonth > 9) "$dayOfMonth" else "0${dayOfMonth}"
-            val dayString = getString(R.string.instance_nowtext,year.toString(),strMonth,strDay)
-            val id = "$year$strMonth$strDay".toLong()
+            val date = SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
+            val dateString = SimpleDateFormat("yyyy年M月d日", Locale.JAPAN).format(Calendar.getInstance().time)
+            val id = (year.toString()+strMonth+strDay).toLong()
+            val flg = date.toLong() == id
 
              activity?.run {
                 calendaredModel =ViewModelProvider(this)[CalendarViewModel::class.java]
@@ -55,9 +59,10 @@ class Calendar : Fragment(), CoroutineScope {
                     if (element.isNotEmpty()) {
                         activity?.run {
                             supportFragmentManager.beginTransaction()
-                                .replace(include_frame.id, BottomSheetFragment(element, dayString,step.step))
+                                .replace(include_frame.id, BottomSheetFragment(element, dateString,step.step,flg,calory))
                                 .commit()
                         }
+
                         bottomsheetBehavior.state =
                             BottomSheetBehavior.STATE_EXPANDED
                     }
