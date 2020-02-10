@@ -1,46 +1,46 @@
-MyApplication... ŽB‰e‚µ‚½Œã‚É‰æ–Ê‘JˆÚ‚·‚é‚â‚Â
-CameraSumple... ƒJƒƒ‰‚ð‹N“®‚·‚é‚â‚Â
-CalendarSample...ƒJƒŒƒ“ƒ_[‹@”\‚Æƒ^ƒbƒv‚µ‚½‚çÚ×‚ÉˆÚ“®‚·‚é‚â‚Â
+MyApplication... æ’®å½±ã—ãŸå¾Œã«ç”»é¢é·ç§»ã™ã‚‹ã‚„ã¤
+CameraSumple... ã‚«ãƒ¡ãƒ©ã‚’èµ·å‹•ã™ã‚‹ã‚„ã¤
+CalendarSample...ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼æ©Ÿèƒ½ã¨ã‚¿ãƒƒãƒ—ã—ãŸã‚‰è©³ç´°ã«ç§»å‹•ã™ã‚‹ã‚„ã¤
 
-ŠÔˆá‚Á‚½”»’f‚ð‚µ‚½Žž‚É“ü—Í‚Å‚«‚é‚æ‚¤‚É‚µ‚Ä‚¨‚­
-jpg‚Åƒf[ƒ^‚ð‘—‚é
+é–“é•ã£ãŸåˆ¤æ–­ã‚’ã—ãŸæ™‚ã«å…¥åŠ›ã§ãã‚‹ã‚ˆã†ã«ã—ã¦ãŠã
+jpgã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ã‚‹
 
-ƒJƒŒƒ“ƒ_[‚Ì•\Ž¦‚Í
-E‚²”Ñ
-E•à”
-
-
-‚µ‚å‚¤‚³‚¢‚Ì‚â‚Â
-‚Õ‚ç‚¢‚Ü‚è[ “ú•t(•b‚Ü‚Å)
-E‚²‚Í‚ñ
-EÁ”ïƒJƒƒŠ[
-EÛŽæƒJƒƒŠ[
-E•à”
-
-	‹N“®‚µ‚½‚Æ‚«©ƒŠƒXƒg‚Å•ÛŽZ
-
-ƒJƒŒƒ“ƒ_[
-«  
-	“ú•t‚ðƒ^ƒbƒv‚µ‚½
-Ú×©ƒf[ƒ^,ƒtƒ‰ƒOƒƒ“ƒgiƒJƒŒƒ“ƒ_[‰º‚É•\Ž¦j
+ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®è¡¨ç¤ºã¯
+ãƒ»ã”é£¯
+ãƒ»æ­©æ•°
 
 
-–¼‘O
+ã—ã‚‡ã†ã•ã„ã®ã‚„ã¤
+ã·ã‚‰ã„ã¾ã‚Šãƒ¼ æ—¥ä»˜(ç§’ã¾ã§)
+ãƒ»ã”ã¯ã‚“
+ãƒ»æ¶ˆè²»ã‚«ãƒ­ãƒªãƒ¼
+ãƒ»æ‘‚å–ã‚«ãƒ­ãƒªãƒ¼
+ãƒ»æ­©æ•°
 
-ƒJƒŒƒ“ƒ_[‰æ–Ê@©@ƒJƒŒƒ“ƒ_[
+	èµ·å‹•ã—ãŸã¨ãâ†ãƒªã‚¹ãƒˆã§ä¿æŒã€‡
 
-•à”‰æ–Ê@©@•à”
-
-ŽB‰e‰æ–Ê@©@foodƒJƒƒ‰
-
-Ý’è‰æ–Ê@©@Ý’è
-
-ƒf[ƒ^ƒx[ƒX‚©‚ç‚Ð‚Á‚Ï‚Á‚Ä‚­‚é
+ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼
+â†“
+	æ—¥ä»˜ã‚’ã‚¿ãƒƒãƒ—ã—ãŸ
+è©³ç´°â†ãƒ‡ãƒ¼ã‚¿,ãƒ•ãƒ©ã‚°ãƒ¡ãƒ³ãƒˆï¼ˆã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ä¸‹ã«è¡¨ç¤ºï¼‰
 
 
-“ú•t‚²‚Æ‚ÉŒv‘ª‚·‚é
+åå‰
 
-‚®‚ç‚Ó‚Ì•`‚«•û
+ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ç”»é¢ã€€â†ã€€ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼
+
+æ­©æ•°ç”»é¢ã€€â†ã€€æ­©æ•°
+
+æ’®å½±ç”»é¢ã€€â†ã€€foodã‚«ãƒ¡ãƒ©
+
+è¨­å®šç”»é¢ã€€â†ã€€è¨­å®š
+
+ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰ã²ã£ã±ã£ã¦ãã‚‹
+
+
+æ—¥ä»˜ã”ã¨ã«è¨ˆæ¸¬ã™ã‚‹
+
+ãã‚‰ãµã®æãæ–¹
 
 
 
@@ -48,11 +48,13 @@ jpg‚Åƒf[ƒ^‚ð‘—‚é
 
 C:\Users\kyoto\.gradle\caches\modules-2\files-2.1\androidx.navigation\navigation-runtime-ktx\2.1.0\1fad01b6a197b7708c952d7808848767f6fb1cbe\navigation-runtime-ktx-2.1.0-sources.jar!\androidx\navigation\Activity.kt
 
-Šî‘b‘ãŽÓ@©@¶‚«‚Ä‚é‚¾‚¯‚ÅÁ”ï‚·‚éƒJƒƒŠ[‚Ì‚±‚Æ
+åŸºç¤Žä»£è¬ã€€â†ã€€ç”Ÿãã¦ã‚‹ã ã‘ã§æ¶ˆè²»ã™ã‚‹ã‚«ãƒ­ãƒªãƒ¼ã®ã“ã¨
 
-•à”‚ÅƒJƒƒŠ[ŒvŽZ
-EÁ”ïƒJƒƒŠ[iKcal)‚PD‚O‚T~i3~ŽžŠÔj~‘Ìdikgj
-EŽžŠÔ•à•~•à”
-E•à•g’·~‚OD‚S‚T
+æ­©æ•°ã§ã‚«ãƒ­ãƒªãƒ¼è¨ˆç®—
+ãƒ»æ¶ˆè²»ã‚«ãƒ­ãƒªãƒ¼ï¼ˆKcal)ï¼ï¼‘ï¼Žï¼ï¼•Ã—ï¼ˆ3Ã—æ™‚é–“ï¼‰Ã—ä½“é‡ï¼ˆkgï¼‰
+ãƒ»æ™‚é–“ï¼æ­©å¹…Ã—æ­©æ•°
+ãƒ»æ­©å¹…ï¼èº«é•·Ã—ï¼ï¼Žï¼”ï¼•
+
+
 
 

@@ -186,8 +186,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
         stepcount = getSharedPreferences("STEP",Context.MODE_PRIVATE).getInt(date, 0)
         getSharedPreferences("User", Context.MODE_PRIVATE).run {
+
             hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
             weight = getString("weight", "60")?.toDouble() ?: 0.0
+
         }
 
         setFragment = Calendar(calgary())
