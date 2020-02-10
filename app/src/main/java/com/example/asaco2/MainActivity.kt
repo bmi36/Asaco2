@@ -184,11 +184,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
 
         val date =
             SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
-        stepcount = prefs.getInt(date, 0)
+        stepcount = getSharedPreferences("STEP",Context.MODE_PRIVATE).getInt(date, 0)
         getSharedPreferences("User", Context.MODE_PRIVATE).run {
             hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
             weight = getString("weight", "60")?.toDouble() ?: 0.0
         }
+
         setFragment = Calendar(calgary())
         setHeader(navView)
         navView.setCheckedItem(R.id.nav_calendar)
@@ -313,9 +314,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             }
         }
     }
-
-    private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 220000).toInt()
-
+    private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 200000).toInt()
     override val coroutineContext: CoroutineContext
         get() = Job()
 
@@ -330,6 +329,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         startService(intentService)
         bindService(intentService, connection, Context.BIND_AUTO_CREATE)
         navView.getHeaderView(0).run {
+            bmiText.text = getString(R.string.bmi,prefs.getInt("bmi",0).toString())
             Cal.text = getString(R.string.calText, prefs.getInt("calory", 0).toString())
             barn.text = getString(R.string.barnText, calgary().toString())
         }
