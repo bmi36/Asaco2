@@ -26,26 +26,22 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.example.asaco2.ui.camera.CameraResult
 import com.example.asaco2.ui.gallery.GalleryFragment
-import com.example.asaco2.ui.home.Calendar
+import com.example.asaco2.ui.home.CalendarFragment
 import com.example.asaco2.ui.tools.ToolsFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 
 const val CAMERA_REQUEST_CODE = 1
 const val HUNTER = "梅田ひろし"
 
 
-class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBtn {
+class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
 
     companion object {
         private const val REQUEST_CODE = 1000
@@ -54,7 +50,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     private lateinit var setFragment: Fragment
     private var mSensorManager: SensorManager? = null
     private var mStepCounterSensor: Sensor? = null
-    private lateinit var prefs: SharedPreferences
+    private lateinit var cookPrefs: SharedPreferences
     private var stepcount = 0
     private lateinit var permissions: Array<String>
     private lateinit var roomViewModel: RoomViewModel
@@ -90,7 +86,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
 
     fun initdatebase(): Int {
         val date =
-            SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
+            SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
         val stepPrefs = getSharedPreferences("STEP", Context.MODE_PRIVATE)
         val flgPrefs = getSharedPreferences("FLAG", Context.MODE_PRIVATE)
         stepPrefs.all.map { Pair(it.key.toLong(), it.value as Int) }.forEach {
@@ -103,7 +99,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                 roomViewModel.insert(entity)
             }
         }
-        return roomViewModel.getStep(date.toLong())?.last() ?: 0
+        return roomViewModel.getStep(date.toLong())?.let {
+            if (it.isEmpty()) 0 else it.last()
+        } ?: 0
     }
 
 
@@ -119,7 +117,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
                     }
                     R.id.nav_calendar -> {
                         toolbar.title = getString(R.string.calendar)
-                        action(Calendar(calgary()))
+                        action(CalendarFragment(calgary()))
                     }
                     R.id.nav_gallery -> {
                         toolbar.title = getString(R.string.hosuu)
@@ -146,20 +144,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
         setTheme(R.style.AppTheme_NoActionBar)
         setContentView(R.layout.activity_main)
 
-        permissions =
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
+        permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         checkPermission(permissions, REQUEST_CODE)
-
-        launch {
-            mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-            mStepCounterSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        }
+        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mStepCounterSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         title = getString(R.string.calendar)
-
         setSupportActionBar(toolbar)
-
-        prefs = getSharedPreferences("Cock", Context.MODE_PRIVATE)
+        cookPrefs = getSharedPreferences("Cock", Context.MODE_PRIVATE)
 
         fab.setOnClickListener {
             //カメラボタンが押されたときになんかするやつ
@@ -184,18 +175,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             ViewModelProvider.AndroidViewModelFactory(application).create(RoomViewModel::class.java)
 
         val date =
-            SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(java.util.Calendar.getInstance().time)
+            SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
 
         stepcount = getSharedPreferences("STEP", Context.MODE_PRIVATE).getInt(date, 0)
-        getSharedPreferences("User", Context.MODE_PRIVATE).run {
-            hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
-            weight = getString("weight", "60")?.toDouble() ?: 0.0
-        }
 
-        setFragment = Calendar(calgary())
+        setFragment = CalendarFragment(calgary())
         setHeader(navView)
         navView.setCheckedItem(R.id.nav_calendar)
-        action(Calendar(calgary()))
+        action(CalendarFragment(calgary()))
     }
 
     override fun onSupportNavigateUp(): Boolean =
@@ -310,30 +297,35 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     override fun onBackPressed() {
         when (navView.checkedItem?.itemId) {
             R.id.nav_calendar -> super.onBackPressed()
-            else -> {
-                onClick()
-
-            }
+            else -> onClick()
         }
     }
 
     private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 200000).toInt()
-    override val coroutineContext: CoroutineContext
-        get() = Job()
 
     override fun onClick() {
         toolbar.title = getString(R.string.calendar)
         navView.setCheckedItem(R.id.nav_calendar)
-        action(Calendar(calgary()))
+        action(CalendarFragment(calgary()))
     }
 
     override fun onStart() {
+
+        getSharedPreferences("User", Context.MODE_PRIVATE).let {
+            val isShokai = it.getBoolean("shokai", false)
+            if (isShokai) action(ToolsFragment(this, navView)).let {
+                title = getString(R.string.shokai)
+            }
+            hohaba = ((it.getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
+            weight = it.getString("weight", "60")?.toDouble() ?: 0.0
+        }
+
         val intentService = Intent(this, StepService::class.java)
         startService(intentService)
         bindService(intentService, connection, Context.BIND_AUTO_CREATE)
         navView.getHeaderView(0).run {
-            bmiText.text = getString(R.string.bmi, prefs.getInt("bmi", 0).toString())
-            Cal.text = getString(R.string.calText, prefs.getInt("calory", 0).toString())
+            bmiText.text = getString(R.string.bmi, cookPrefs.getInt("bmi", 0).toString())
+            Cal.text = getString(R.string.calText, cookPrefs.getInt("calory", 0).toString())
             barn.text = getString(R.string.barnText, calgary().toString())
         }
         super.onStart()

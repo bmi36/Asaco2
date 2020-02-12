@@ -13,8 +13,10 @@ import com.example.asaco2.hideKeyboard
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.fragment_tools.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import java.lang.NullPointerException
 
-class ToolsFragment(private val content: Context, private val navView: NavigationView) : Fragment() {
+class ToolsFragment(private val content: Context, private val navView: NavigationView) :
+    Fragment() {
 
     interface FinishBtn {
         fun onClick()
@@ -30,7 +32,7 @@ class ToolsFragment(private val content: Context, private val navView: Navigatio
         super.onViewCreated(view, savedInstanceState)
 
         val prefs = content.getSharedPreferences("User", Context.MODE_PRIVATE)
-        val checkId: Int = prefs.getInt("sex", 0)
+        val checkId: Int = prefs.getInt("sex", R.id.maleradioBtn)
 
         userName.setText(prefs.getString("name", "梅田ひろし"))
         weight.setText(prefs.getString("weight", 60f.toString()))
@@ -40,7 +42,7 @@ class ToolsFragment(private val content: Context, private val navView: Navigatio
 
         UserButton.setOnClickListener {
 
-            try {
+            if (checkEdit()) {
                 val editor = prefs.edit()
                 val str = userName.text.toString()
                 val wint = weight.text.toString().toDouble()
@@ -71,11 +73,20 @@ class ToolsFragment(private val content: Context, private val navView: Navigatio
                     editor.apply()
                     Toast.makeText(activity, R.string.conp, Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(activity, R.string.error, Toast.LENGTH_SHORT).show()
             }
             activity?.let { hideKeyboard(it) }
         }
+    }
+
+    private fun checkEdit(): Boolean {
+        val errorAction = getString(R.string.Error)
+        var isOk = true
+
+        if (userName.text.isEmpty()) userName.error = errorAction.also { isOk = false }
+        if (weight.text.isEmpty()) weight.error = errorAction.also { isOk = false }
+        if (high.text.isEmpty()) high.error = errorAction.also { isOk = false }
+        if (agetext.text.isEmpty()) agetext.error = errorAction.also { isOk = false }
+
+        return isOk
     }
 }
