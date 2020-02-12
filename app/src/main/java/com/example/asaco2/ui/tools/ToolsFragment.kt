@@ -70,6 +70,7 @@ class ToolsFragment(private val content: Context, private val navView: Navigatio
                 }
 
                 (content as FinishBtn).onClick().run {
+                    editor.putBoolean("shokai",true)
                     editor.apply()
                     Toast.makeText(activity, R.string.conp, Toast.LENGTH_SHORT).show()
                 }

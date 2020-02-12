@@ -144,7 +144,8 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
         setTheme(R.style.AppTheme_NoActionBar)
         setContentView(R.layout.activity_main)
 
-        permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        permissions =
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         checkPermission(permissions, REQUEST_CODE)
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mStepCounterSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
@@ -313,20 +314,20 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
 
         getSharedPreferences("User", Context.MODE_PRIVATE).let {
             val isShokai = it.getBoolean("shokai", false)
-            if (isShokai) action(ToolsFragment(this, navView)).let {
+            if (!isShokai) action(ToolsFragment(this, navView)).let {
                 title = getString(R.string.shokai)
             }
             hohaba = ((it.getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
             weight = it.getString("weight", "60")?.toDouble() ?: 0.0
-        }
 
-        val intentService = Intent(this, StepService::class.java)
-        startService(intentService)
-        bindService(intentService, connection, Context.BIND_AUTO_CREATE)
-        navView.getHeaderView(0).run {
-            bmiText.text = getString(R.string.bmi, cookPrefs.getInt("bmi", 0).toString())
-            Cal.text = getString(R.string.calText, cookPrefs.getInt("calory", 0).toString())
-            barn.text = getString(R.string.barnText, calgary().toString())
+            val intentService = Intent(this, StepService::class.java)
+            startService(intentService)
+            bindService(intentService, connection, Context.BIND_AUTO_CREATE)
+            navView.getHeaderView(0).run {
+                bmiText.text = getString(R.string.bmi, it. getInt ("bmi", 0).toString())
+                Cal.text = getString(R.string.calText, cookPrefs.getInt("calory", 0).toString())
+                barn.text = getString(R.string.barnText, calgary().toString())
+            }
         }
         super.onStart()
     }
