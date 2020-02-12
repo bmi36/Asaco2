@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
     private var mSensorManager: SensorManager? = null
     private var mStepCounterSensor: Sensor? = null
     private lateinit var prefs: SharedPreferences
-    private var stepcount = -2
+    private var stepcount = 0
     private lateinit var permissions: Array<String>
     private lateinit var roomViewModel: RoomViewModel
     private var flg = false

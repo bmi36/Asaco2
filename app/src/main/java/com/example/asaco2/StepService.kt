@@ -22,8 +22,7 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
 
     private lateinit var mSensorManager: SensorManager
     private lateinit var mstepConterSensor: Sensor
-    private lateinit var serviceViewModel: RoomViewModel
-    var step: Int = 0
+    var step: Int = -2
     private val dispatcher = ServiceLifecycleDispatcher(this)
 
     override fun onCreate() {
@@ -47,6 +46,7 @@ class StepService : Service(), SensorEventListener, LifecycleOwner {
             step = getSharedPreferences("STEP",Context.MODE_PRIVATE).getInt(date,0)
             step++
             getSharedPreferences("STEP",Context.MODE_PRIVATE).edit().putInt(date,step).apply()
+
             Log.d("step", step.toString())
         }
     }
