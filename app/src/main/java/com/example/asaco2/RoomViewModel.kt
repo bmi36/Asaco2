@@ -11,9 +11,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class RoomViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: RoomRepository = RoomDataBase.getInstance(application).dao().let {
-        RoomRepository(it)
-    }
+    private val repository: RoomRepository = RoomDataBase.getInstance(application).dao().let { RoomRepository(it) }
 
 //    private var stepList = MediatorLiveData<Array<Int>>()
 //    var mstepList: MediatorLiveData<Array<Int>>

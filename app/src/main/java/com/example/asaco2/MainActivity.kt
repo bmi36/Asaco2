@@ -13,7 +13,6 @@ import android.os.IBinder
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -33,34 +32,38 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
 const val CAMERA_REQUEST_CODE = 1
 const val HUNTER = "梅田ひろし"
 
 
-class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
+class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBtn {
 
     companion object {
         private const val REQUEST_CODE = 1000
     }
 
-    lateinit var setFragment: Fragment
-    var mSensorManager: SensorManager? = null
-    var mStepCounterSensor: Sensor? = null
-    lateinit var cookPrefs: SharedPreferences
+    private lateinit var setFragment: Fragment
+    private var mSensorManager: SensorManager? = null
+    private var mStepCounterSensor: Sensor? = null
+    private lateinit var prefs: SharedPreferences
     private var stepcount = 0
-    lateinit var permissions: Array<String>
-    lateinit var roomViewModel: RoomViewModel
-    var flg = false
+    private lateinit var permissions: Array<String>
+    private lateinit var roomViewModel: RoomViewModel
+    private var flg = false
     private var hohaba: Double = 0.0
-    var weight = 0.0
-    var bind = false
-    lateinit var stepService: StepService
-    val appBarConfiguration: AppBarConfiguration by lazy {
+    private var weight = 0.0
+    private var bind = false
+    private lateinit var stepService: StepService
+    private val appBarConfiguration: AppBarConfiguration by lazy {
         AppBarConfiguration(
             setOf(
                 R.id.nav_calendar,
@@ -100,9 +103,8 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
                 roomViewModel.insert(entity)
             }
         }
-        return roomViewModel.getStep(date.toLong())?.let {
-            if (it.isEmpty()) 0 else it.last()
-        } ?: 0
+
+        return roomViewModel.getStep(date.toLong())?.last() ?: 0
     }
 
 
@@ -126,7 +128,7 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
                             GalleryFragment(
                                 initdatebase(),
                                 (calgary()).toString(),
-                                (hohaba * stepcount / 100000)
+                                (hohaba * stepcount / 10000)
                             )
                         )
                     }
@@ -147,12 +149,18 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
 
         permissions =
             arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
         checkPermission(permissions, REQUEST_CODE)
-        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        mStepCounterSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+
+        launch {
+            mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+            mStepCounterSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        }
         title = getString(R.string.calendar)
+
         setSupportActionBar(toolbar)
-        cookPrefs = getSharedPreferences("Cock", Context.MODE_PRIVATE)
+
+        prefs = getSharedPreferences("Cock", Context.MODE_PRIVATE)
 
         fab.setOnClickListener {
             //カメラボタンが押されたときになんかするやつ
@@ -180,6 +188,14 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
             SimpleDateFormat("yyyyMMdd", Locale.JAPAN).format(Calendar.getInstance().time)
 
         stepcount = getSharedPreferences("STEP", Context.MODE_PRIVATE).getInt(date, 0)
+
+        if (getSharedPreferences("User", Context.MODE_PRIVATE).all.isEmpty()) title =
+            getString(R.string.shokai).also { action(ToolsFragment(this, navView)) }
+
+        getSharedPreferences("User", Context.MODE_PRIVATE).run {
+            hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
+            weight = getString("weight", "60")?.toDouble() ?: 0.0
+        }
 
         setFragment = CalendarFragment(calgary())
         setHeader(navView)
@@ -299,11 +315,16 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
     override fun onBackPressed() {
         when (navView.checkedItem?.itemId) {
             R.id.nav_calendar -> super.onBackPressed()
-            else -> onClick()
+            else -> {
+                onClick()
+
+            }
         }
     }
 
     private fun calgary() = (stepcount.let { 1.05 * (3 * hohaba * it) * weight } / 200000).toInt()
+    override val coroutineContext: CoroutineContext
+        get() = Job()
 
     override fun onClick() {
         toolbar.title = getString(R.string.calendar)
@@ -312,24 +333,13 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
     }
 
     override fun onStart() {
-
-        getSharedPreferences("User", Context.MODE_PRIVATE).let {
-            val isShokai = it.getBoolean("shokai", false)
-            if (!isShokai) action(ToolsFragment(this, navView)).let {
-                title = getString(R.string.shokai)
-                Toast.makeText(this, R.string.toast_shokika, Toast.LENGTH_LONG).show()
-            }
-            hohaba = ((it.getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
-            weight = it.getString("weight", "60")?.toDouble() ?: 0.0
-
-            val intentService = Intent(this, StepService::class.java)
-            startService(intentService)
-            bindService(intentService, connection, Context.BIND_AUTO_CREATE)
-            navView.getHeaderView(0).run {
-                bmiText.text = getString(R.string.bmi, it.getInt("bmi", 0).toString())
-                Cal.text = getString(R.string.calText, cookPrefs.getInt("calory", 0).toString())
-                barn.text = getString(R.string.barnText, calgary().toString())
-            }
+        val intentService = Intent(this, StepService::class.java)
+        startService(intentService)
+        bindService(intentService, connection, Context.BIND_AUTO_CREATE)
+        navView.getHeaderView(0).run {
+            bmiText.text = getString(R.string.bmi, prefs.getInt("bmi", 0).toString())
+            Cal.text = getString(R.string.calText, prefs.getInt("calory", 0).toString())
+            barn.text = getString(R.string.barnText, calgary().toString())
         }
         super.onStart()
     }

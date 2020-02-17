@@ -43,7 +43,15 @@ class ImageSuccessFragment(private val uri: Uri, private val cook: Cook) : Fragm
 
         cooknametext.setText(cook.foodname, TextView.BufferType.EDITABLE)
         caltext.setText(cook.calorie.toString(), TextView.BufferType.EDITABLE)
-        okbutton.setOnClickListener {
+        okbutton.setOnClickListener(lister)
+    }
+
+    val lister = View.OnClickListener {
+        var enp = true
+        if (cooknametext.text.isEmpty()) cooknametext.error = getString(R.string.errortext).also { enp = false }
+        if(caltext.text.isEmpty()) caltext.error = getString(R.string.errortext).also { enp = false }
+
+        if (enp) {
             val pref = activity?.run { getSharedPreferences("Cock", Context.MODE_PRIVATE) }
             val calorie = pref?.let { it.getInt("calory", 0) + cook.calorie } ?: 0
             val cookStr = cooknametext.text.toString()

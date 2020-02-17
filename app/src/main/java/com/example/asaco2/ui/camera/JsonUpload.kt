@@ -11,8 +11,8 @@ import retrofit2.http.POST
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
-//const val URL = "http://192.168.3.7:8080"
-const val  URL = "http://192.168.42.120:8080"
+const val URL = "http://192.168.3.7:8080"
+//const val  URL = "http://192.168.42.120:8080"
 interface RetrofitInterface {
     @POST("/post")
     fun sendImage(@Body image: String?): Call<Cook>
