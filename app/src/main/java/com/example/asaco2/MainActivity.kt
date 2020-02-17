@@ -13,6 +13,7 @@ import android.os.IBinder
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -47,19 +48,19 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
         private const val REQUEST_CODE = 1000
     }
 
-    private lateinit var setFragment: Fragment
-    private var mSensorManager: SensorManager? = null
-    private var mStepCounterSensor: Sensor? = null
-    private lateinit var cookPrefs: SharedPreferences
+    lateinit var setFragment: Fragment
+    var mSensorManager: SensorManager? = null
+    var mStepCounterSensor: Sensor? = null
+    lateinit var cookPrefs: SharedPreferences
     private var stepcount = 0
-    private lateinit var permissions: Array<String>
-    private lateinit var roomViewModel: RoomViewModel
-    private var flg = false
+    lateinit var permissions: Array<String>
+    lateinit var roomViewModel: RoomViewModel
+    var flg = false
     private var hohaba: Double = 0.0
-    private var weight = 0.0
-    private var bind = false
-    private lateinit var stepService: StepService
-    private val appBarConfiguration: AppBarConfiguration by lazy {
+    var weight = 0.0
+    var bind = false
+    lateinit var stepService: StepService
+    val appBarConfiguration: AppBarConfiguration by lazy {
         AppBarConfiguration(
             setOf(
                 R.id.nav_calendar,
@@ -316,6 +317,7 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
             val isShokai = it.getBoolean("shokai", false)
             if (!isShokai) action(ToolsFragment(this, navView)).let {
                 title = getString(R.string.shokai)
+                Toast.makeText(this, R.string.toast_shokika, Toast.LENGTH_LONG).show()
             }
             hohaba = ((it.getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
             weight = it.getString("weight", "60")?.toDouble() ?: 0.0
@@ -324,7 +326,7 @@ class MainActivity : AppCompatActivity(), ToolsFragment.FinishBtn {
             startService(intentService)
             bindService(intentService, connection, Context.BIND_AUTO_CREATE)
             navView.getHeaderView(0).run {
-                bmiText.text = getString(R.string.bmi, it. getInt ("bmi", 0).toString())
+                bmiText.text = getString(R.string.bmi, it.getInt("bmi", 0).toString())
                 Cal.text = getString(R.string.calText, cookPrefs.getInt("calory", 0).toString())
                 barn.text = getString(R.string.barnText, calgary().toString())
             }

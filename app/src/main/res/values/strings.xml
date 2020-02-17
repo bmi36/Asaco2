@@ -39,7 +39,6 @@
     <string name="walkCalText">%s歩</string>
     <string name="total">カロリー差：%skcal</string>
     <string name="bmi">"BMI:%s"</string>
-    <string name="error">もう一度やり直してください</string>
     <string name="distanceText">距離</string>
     <string name="dayText">Day</string>
     <string name="monthText">MONTH</string>
@@ -48,6 +47,8 @@
     <string name="km">%skm</string>
     <string name="shokai">正気設定</string>
     <string name="Error">入力してください</string>
+    <string name="toast_shokika">初期設定をします</string>
+
 
 
 
