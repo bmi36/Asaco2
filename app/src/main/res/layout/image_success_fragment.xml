@@ -65,7 +65,7 @@
         app:layout_constraintStart_toStartOf="@+id/caltext"
         app:layout_constraintTop_toTopOf="@+id/nameText"
         android:importantForAutofill="no"
-        android:hint="@string/errortext"/>
+        android:hint="@string/error"/>
 
     <EditText
         android:id="@+id/caltext"
@@ -78,7 +78,7 @@
         app:layout_constraintStart_toEndOf="@+id/caloryText"
         app:layout_constraintTop_toTopOf="@+id/caloryText"
         android:inputType="number"
-        android:hint="@string/errortext"
+        android:hint="@string/error"
         android:importantForAutofill="no" />
 
 

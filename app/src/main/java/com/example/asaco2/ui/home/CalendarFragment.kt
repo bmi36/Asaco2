@@ -52,6 +52,7 @@ class CalendarFragment(val calory: Int) : Fragment(), CoroutineScope {
                 calendaredModel =ViewModelProvider(this)[CalendarViewModel::class.java]
                  stepModel = ViewModelProvider(this)[RoomViewModel::class.java]
             } ?: throw Exception("Invalid Activity")
+
             launch(Dispatchers.Default) {
                 val element = calendaredModel.getCalendar(id)
                 val step = stepModel.getDayEntity(id)

@@ -10,7 +10,6 @@ import kotlinx.coroutines.selects.select
 @Dao
 interface CalendarDao {
 
-    //💩
     @Query("select * from CalendarEntity")
     fun getEntity(): LiveData<Array<CalendarEntity>>
 

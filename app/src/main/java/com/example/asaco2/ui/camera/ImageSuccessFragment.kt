@@ -10,9 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.example.asaco2.R
 import com.example.asaco2.ui.home.CalendarEntity
 import com.example.asaco2.ui.home.CalendarViewModel
@@ -48,8 +46,8 @@ class ImageSuccessFragment(private val uri: Uri, private val cook: Cook) : Fragm
 
     val lister = View.OnClickListener {
         var enp = true
-        if (cooknametext.text.isEmpty()) cooknametext.error = getString(R.string.errortext).also { enp = false }
-        if(caltext.text.isEmpty()) caltext.error = getString(R.string.errortext).also { enp = false }
+        if (cooknametext.text.isEmpty()) cooknametext.error = getString(R.string.error).also { enp = false }
+        if(caltext.text.isEmpty()) caltext.error = getString(R.string.error).also { enp = false }
 
         if (enp) {
             val pref = activity?.run { getSharedPreferences("Cock", Context.MODE_PRIVATE) }

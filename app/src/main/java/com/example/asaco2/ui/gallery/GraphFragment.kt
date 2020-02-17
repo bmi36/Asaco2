@@ -51,7 +51,7 @@ class GraphFragment(
         chart.animateY(1000)
     }
 
-    //    表示するやつを作るやつ
+    //    表示するやつ
     private fun action() {
         list?.let {
             if (it.isNotEmpty()) {

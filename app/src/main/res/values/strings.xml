@@ -13,10 +13,8 @@
     <string name="sintyou">身長(cm)：</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="loading">now loading…</string>
-    <string name="errortext">もう一度やり直してください</string>
     <string name="foodname">料理名：</string>
     <string name="missteke">やめる</string>
-    <string name="filedText">もう一度やり直してください</string>
     <string name="ok">決定</string>
     <string name="todo">TODO</string>
 

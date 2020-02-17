@@ -80,7 +80,8 @@ class ToolsFragment(private val content: Context, private val navView: Navigatio
     }
 
     private fun checkEdit(): Boolean {
-        val errorAction = getString(R.string.errortext)
+
+        val errorAction = getString(R.string.error)
         var isOk = true
 
         if (userName.text.isEmpty()) userName.error = errorAction.also { isOk = false }

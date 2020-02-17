@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import java.util.*
 
 class CalendarRepository(private val dao: CalendarDao) {
-    val allEntity: LiveData<Array<CalendarEntity>> = dao.getEntity()
 
     @WorkerThread
     suspend fun insert(entity: CalendarEntity){ dao.insert(entity) }

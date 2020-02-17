@@ -11,5 +11,4 @@ class RoomRepository (private val dao: RoomDao){
     suspend fun getsum(date: Long): Array<Int> = dao.getsumSteps(date)
     suspend fun getMonth(year: Long): Array<Int> = dao.getMonth(year)
     suspend fun getDayEntity(id: Long): RoomEntity = dao.getDayEntity(id)
-    fun getStep() = dao.getStep()
 }

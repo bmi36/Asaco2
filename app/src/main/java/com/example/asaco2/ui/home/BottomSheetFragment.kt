@@ -56,7 +56,7 @@ class BottomSheetFragment(
 
         val bmr = prefs?.getInt("bmr", 0) ?: 0
         val difference = if (flag)
-            total - walkcalorie.toInt() else total - walkcalorie.toInt() - bmr
+            total - walkcalorie else total - walkcalorie - bmr
 
         totalCalText.text = getString(R.string.total, difference.toString())
 

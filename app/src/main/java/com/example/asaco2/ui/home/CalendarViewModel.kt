@@ -19,14 +19,5 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
 
     fun update(entity: CalendarEntity) = viewModelScope.launch { calendarRepository.update(entity) }
 
-    fun InsertOrUpdata(entity: CalendarEntity) = viewModelScope.launch {
-        try {
-            calendarRepository.insert(entity)
-        } catch (e: SQLException) {
-            e.printStackTrace()
-            calendarRepository.update(entity)
-        }
-    }
-
     fun getCalendar(id: Long): List<CalendarEntity>? = calendarRepository.getCalendar(id)
 }

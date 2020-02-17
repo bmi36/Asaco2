@@ -13,14 +13,6 @@ import kotlinx.coroutines.withContext
 class RoomViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: RoomRepository = RoomDataBase.getInstance(application).dao().let { RoomRepository(it) }
 
-//    private var stepList = MediatorLiveData<Array<Int>>()
-//    var mstepList: MediatorLiveData<Array<Int>>
-//
-//    init {
-//       stepList.postValue(repository.getStep())
-//        mstepList = this.stepList
-//    }
-
     fun getStep(id: Long) = runBlocking { getsum(id) }
     fun getMonth(year: Long) = runBlocking { getmonth(year) }
     fun getDayEntity(id: Long) = runBlocking { getdayentity(id) }

@@ -43,13 +43,11 @@ class GalleryFragment(private val stepcount: Int, private val calory: String, pr
         hosuu_text.text = stepcount.toString()
 
         listener(EnamDate.DAY)
-//        dayBtn.setOnClickListener { listener(EnamDate.DAY) }
-//        monthBtn.setOnClickListener { listener(EnamDate.MONTH) }
     }
 
-    private fun listener(date: EnamDate) {
+    private fun listener(enamDate: EnamDate) {
         val currentTimeMillis = Date(System.currentTimeMillis())
-        val search: String = when (date) {
+        val search: String = when (enamDate) {
 
             EnamDate.DAY -> SimpleDateFormat("yyyyMMdd", Locale.JAPAN).run { format(currentTimeMillis) }
 
@@ -57,14 +55,15 @@ class GalleryFragment(private val stepcount: Int, private val calory: String, pr
         }
 
         launch(Dispatchers.IO) {
-            val list: List<Float>? = when (date) {
+            val list: List<Float>? = when (enamDate) {
                 EnamDate.DAY -> viewModel.getStep(search.replaceInt().toLong())?.map { it.toFloat() }
 
                 EnamDate.MONTH -> viewModel.getMonth(search.toLong()).map { it.toFloat() }
             }?.asReversed()
+
             //            グラフの表示
             childFragmentManager.beginTransaction()
-                .replace(frame.id, GraphFragment(list?.asReversed()?.toTypedArray(),date)).commit()
+                .replace(frame.id, GraphFragment(list?.asReversed()?.toTypedArray(),enamDate)).commit()
         }
     }
 

@@ -25,6 +25,7 @@ class CameraResult : AppCompatActivity(), CoroutineScope {
         val fileDir = intent?.extras?.get("file") as Uri
         val file: File = fileDir.toFile()
         val uri = intent?.extras?.get("uri") as Uri
+
         frame.visibility = FrameLayout.VISIBLE
         supportFragmentManager.beginTransaction()
             .replace(frame.id, LoaderFragment())

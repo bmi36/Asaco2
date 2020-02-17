@@ -42,7 +42,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 const val CAMERA_REQUEST_CODE = 1
-const val HUNTER = "梅田ひろし"
+const val HUNTER = "名前がまだありません"
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBtn {
@@ -162,8 +162,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
 
         prefs = getSharedPreferences("Cock", Context.MODE_PRIVATE)
 
+        //カメラボタンが押されたとき
         fab.setOnClickListener {
-            //カメラボタンが押されたときになんかするやつ
             if (flg) takePicture()
             drawer_layout.closeDrawer(GravityCompat.START)
 
@@ -193,8 +193,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, ToolsFragment.FinishBt
             getString(R.string.shokai).also { action(ToolsFragment(this, navView)) }
 
         getSharedPreferences("User", Context.MODE_PRIVATE).run {
-            hohaba = ((getString("height", "170")?.toDouble() ?: 0.0) * 0.45)
-            weight = getString("weight", "60")?.toDouble() ?: 0.0
+            hohaba = ((getString("height", "0")?.toDouble() ?: 0.0) * 0.45)
+            weight = getString("weight", "0")?.toDouble() ?: 0.0
         }
 
         setFragment = CalendarFragment(calgary())
